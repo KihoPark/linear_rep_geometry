@@ -18,13 +18,9 @@ sns.set_theme(
     font_scale=1.5,  # 1.75, 2, ...
 )
 
-# Here, use the category where the weights for LLAMA-2-7B are stored
-MODEL = "/net/projects/veitch/LLMs/llama2-based-models/llama2-hf/Llama-2-7b-hf"
-tokenizer = transformers.LlamaTokenizer.from_pretrained(MODEL)
-model = transformers.LlamaForCausalLM.from_pretrained(MODEL, low_cpu_mem_usage=True, device_map="auto")
-
-
-
+# MODEL_PATH = # the category where the weights for LLAMA-2-7B are stored
+tokenizer = transformers.LlamaTokenizer.from_pretrained(MODEL_PATH)
+model = transformers.LlamaForCausalLM.from_pretrained(MODEL_PATH, low_cpu_mem_usage=True, device_map="auto")
 
 
 
