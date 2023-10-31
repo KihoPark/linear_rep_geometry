@@ -18,7 +18,7 @@ sns.set_theme(
     font_scale=1.5,  # 1.75, 2, ...
 )
 
-# MODEL_PATH = # the category where the weights for LLAMA-2-7B are stored
+# MODEL_PATH = # Path where the weights for LLaMA-2-7B are stored
 tokenizer = transformers.LlamaTokenizer.from_pretrained(MODEL_PATH)
 model = transformers.LlamaForCausalLM.from_pretrained(MODEL_PATH, low_cpu_mem_usage=True, device_map="auto")
 
