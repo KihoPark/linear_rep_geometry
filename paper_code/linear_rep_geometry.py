@@ -257,7 +257,7 @@ def show_rank(text_batch, l_batch, g, concept_g, which_ind, concept_number):
 
 ####### Experiment 4: heatmap #######
 ## draw heatmap of the inner products
-def draw_heatmaps(data_matrices):
+def draw_heatmaps(data_matrices, cmap = 'PiYG'):
     fig = plt.figure(figsize=(13, 8))
     gs = gridspec.GridSpec(2, 3, wspace=0.2)
     
@@ -270,7 +270,7 @@ def draw_heatmaps(data_matrices):
     ims = []
 
     ax_left = plt.subplot(gs[0:2, 0:2])
-    im = ax_left.imshow(data_matrices[0])
+    im = ax_left.imshow(data_matrices[0], cmap=cmap)
     ims.append(im)
     ax_left.set_xticks(ticks)
     ax_left.set_xticklabels(labels)
@@ -279,18 +279,18 @@ def draw_heatmaps(data_matrices):
     ax_left.set_title(r'$M = \mathrm{Cov}(\gamma)^{-1}$')
 
     ax_top_right = plt.subplot(gs[0, 2])
-    im = ax_top_right.imshow(data_matrices[1])
+    im = ax_top_right.imshow(data_matrices[1], cmap=cmap)
     ims.append(im)
     ax_top_right.set_xticks([])
     ax_top_right.set_yticks([])
     ax_top_right.set_title(r'$M = I_d$')
 
     ax_bottom_right = plt.subplot(gs[1, 2])
-    im = ax_bottom_right.imshow(data_matrices[2])
+    im = ax_bottom_right.imshow(data_matrices[2], cmap=cmap)
     ims.append(im)
     ax_bottom_right.set_xticks([])
     ax_bottom_right.set_yticks([])
-    ax_bottom_right.set_title(r'$M = \mathrm{Cov}(\gamma)$')
+    ax_bottom_right.set_title(r'Random $M$')
     
     divider = make_axes_locatable(ax_left)
     cax = divider.append_axes("right", size="5%", pad=0.2)
