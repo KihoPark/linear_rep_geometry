@@ -257,8 +257,8 @@ def show_rank(text_batch, l_batch, g, concept_g, which_ind, concept_number):
 
 ####### Experiment 4: heatmap #######
 ## draw heatmap of the inner products
-def draw_heatmaps(data_matrices, cmap = 'PiYG'):
-    fig = plt.figure(figsize=(13, 8))
+def draw_heatmaps(data_matrices, concept_labels, cmap = 'PiYG'):
+    fig = plt.figure(figsize=(14, 8.5))
     gs = gridspec.GridSpec(2, 3, wspace=0.2)
     
     vmin = min([data.min() for data in data_matrices])
@@ -267,6 +267,7 @@ def draw_heatmaps(data_matrices, cmap = 'PiYG'):
     ticks = list(range(2, 27, 3))
     labels = [str(i+1) for i in ticks]
     
+    ytick = list(range(27))
     ims = []
 
     ax_left = plt.subplot(gs[0:2, 0:2])
@@ -274,8 +275,8 @@ def draw_heatmaps(data_matrices, cmap = 'PiYG'):
     ims.append(im)
     ax_left.set_xticks(ticks)
     ax_left.set_xticklabels(labels)
-    ax_left.set_yticks(ticks)
-    ax_left.set_yticklabels(labels)
+    ax_left.set_yticks(ytick)
+    ax_left.set_yticklabels(concept_labels)
     ax_left.set_title(r'$M = \mathrm{Cov}(\gamma)^{-1}$')
 
     ax_top_right = plt.subplot(gs[0, 2])
