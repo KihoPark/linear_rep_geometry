@@ -15,7 +15,7 @@ sns.set_theme(
     style="white",  # 'whitegrid', 'dark', 'darkgrid', ...
     palette="colorblind",
     font="sans-serif",  # 'serif'
-    font_scale=1.5,  # 1.75, 2, ...
+    font_scale=1.75,  # 1.75, 2, ...
 )
 
 # MODEL_PATH = ### Path where the weights for LLaMA-2-7B are stored ###
@@ -102,7 +102,7 @@ def show_histogram_LOO(inner_product_with_counterfactual_pairs_LOO,
         target = inner_product_with_counterfactual_pairs_LOO[i]
         baseline = random_pairs @ concept[i]
 
-        axs[i].hist(baseline.cpu().numpy(), bins=100, alpha=0.6, color = 'blue', label='random pairs', density=True)
+        axs[i].hist(baseline.cpu().numpy(), bins=50, alpha=0.6, color = 'blue', label='random pairs', density=True)
         axs[i].hist(target.cpu().numpy(), alpha=0.7, color = 'red', label='counterfactual pairs', density=True)
         axs[i].set_yticks([])
         axs[i].set_title(concept_names[i])
@@ -119,8 +119,56 @@ def show_histogram_LOO(inner_product_with_counterfactual_pairs_LOO,
 
 
 
+####### Experiment 2: heatmap #######
+## draw heatmap of the inner products
+def draw_heatmaps(data_matrices, concept_labels, cmap = 'PiYG'):
+    fig = plt.figure(figsize=(14, 8.5))
+    gs = gridspec.GridSpec(2, 3, wspace=0.2)
+    
+    vmin = min([data.min() for data in data_matrices])
+    vmax = max([data.max() for data in data_matrices])
+    
+    ticks = list(range(2, 27, 3))
+    labels = [str(i+1) for i in ticks]
+    
+    ytick = list(range(27))
+    ims = []
 
-####### Experiment 2: measurement #######
+    ax_left = plt.subplot(gs[0:2, 0:2])
+    im = ax_left.imshow(data_matrices[0], cmap=cmap)
+    ims.append(im)
+    ax_left.set_xticks(ticks)
+    ax_left.set_xticklabels(labels)
+    ax_left.set_yticks(ytick)
+    ax_left.set_yticklabels(concept_labels)
+    ax_left.set_title(r'$M = \mathrm{Cov}(\gamma)^{-1}$')
+
+    ax_top_right = plt.subplot(gs[0, 2])
+    im = ax_top_right.imshow(data_matrices[1], cmap=cmap)
+    ims.append(im)
+    ax_top_right.set_xticks([])
+    ax_top_right.set_yticks([])
+    ax_top_right.set_title(r'$M = I_d$')
+
+    ax_bottom_right = plt.subplot(gs[1, 2])
+    im = ax_bottom_right.imshow(data_matrices[2], cmap=cmap)
+    ims.append(im)
+    ax_bottom_right.set_xticks([])
+    ax_bottom_right.set_yticks([])
+    ax_bottom_right.set_title(r'Random $M$')
+    
+    divider = make_axes_locatable(ax_left)
+    cax = divider.append_axes("right", size="5%", pad=0.2)
+    cbar = plt.colorbar(ims[-1], cax=cax, orientation='vertical')
+
+    plt.tight_layout()
+    plt.savefig(f"figures/three_heatmaps.pdf", bbox_inches='tight')
+    plt.show()
+
+
+
+
+####### Experiment 3: measurement #######
 ## get lambda pairs for diffrenet languages
 def get_lambda_pairs(filename, num_eg = 20):
     lambdas_0 = []
@@ -171,7 +219,7 @@ def hist_measurement(lambda_0, lambda_1, concept, concept_names,
 
 
 
-####### Experiment 3: intervention #######
+####### Experiment 4: intervention #######
 ## get the difference between the conditional probability of words
 def get_logit(embedding, unembedding, base = "king", W = "queen", Z = "King") :
     num = embedding.shape[0]
@@ -254,59 +302,6 @@ def show_rank(text_batch, l_batch, g, concept_g, which_ind, concept_number):
 
 
 
-
-####### Experiment 4: heatmap #######
-## draw heatmap of the inner products
-def draw_heatmaps(data_matrices, concept_labels, cmap = 'PiYG'):
-    fig = plt.figure(figsize=(14, 8.5))
-    gs = gridspec.GridSpec(2, 3, wspace=0.2)
-    
-    vmin = min([data.min() for data in data_matrices])
-    vmax = max([data.max() for data in data_matrices])
-    
-    ticks = list(range(2, 27, 3))
-    labels = [str(i+1) for i in ticks]
-    
-    ytick = list(range(27))
-    ims = []
-
-    ax_left = plt.subplot(gs[0:2, 0:2])
-    im = ax_left.imshow(data_matrices[0], cmap=cmap)
-    ims.append(im)
-    ax_left.set_xticks(ticks)
-    ax_left.set_xticklabels(labels)
-    ax_left.set_yticks(ytick)
-    ax_left.set_yticklabels(concept_labels)
-    ax_left.set_title(r'$M = \mathrm{Cov}(\gamma)^{-1}$')
-
-    ax_top_right = plt.subplot(gs[0, 2])
-    im = ax_top_right.imshow(data_matrices[1], cmap=cmap)
-    ims.append(im)
-    ax_top_right.set_xticks([])
-    ax_top_right.set_yticks([])
-    ax_top_right.set_title(r'$M = I_d$')
-
-    ax_bottom_right = plt.subplot(gs[1, 2])
-    im = ax_bottom_right.imshow(data_matrices[2], cmap=cmap)
-    ims.append(im)
-    ax_bottom_right.set_xticks([])
-    ax_bottom_right.set_yticks([])
-    ax_bottom_right.set_title(r'Random $M$')
-    
-    divider = make_axes_locatable(ax_left)
-    cax = divider.append_axes("right", size="5%", pad=0.2)
-    cbar = plt.colorbar(ims[-1], cax=cax, orientation='vertical')
-
-    plt.tight_layout()
-    plt.savefig(f"figures/three_heatmaps.pdf", bbox_inches='tight')
-    plt.show()
-
-
-
-
-
-
-
 ####### Appendix: check the assumption #######
 ## check independence
 def check_indep(gamma, g, concept_gamma, concept_g, i, j, concept_names,
@@ -320,13 +315,13 @@ def check_indep(gamma, g, concept_gamma, concept_g, i, j, concept_names,
     
     axs[0].scatter(a_gamma.cpu().numpy(), b_gamma.cpu().numpy(), alpha = alpha, s = s)
     for _, label in enumerate(name):
-        axs[0].text(a_gamma[ind[_]], b_gamma[ind[_]], label)
+        axs[0].text(a_gamma[ind[_]], b_gamma[ind[_]], label, fontsize = 12)
     axs[0].set_xlabel(r"$\bar{\gamma}_W^\top \gamma$")
     axs[0].set_ylabel(r"$\bar{\gamma}_Z^\top \gamma$")
     
     axs[1].scatter(a_g.cpu().numpy(), b_g.cpu().numpy(), alpha = alpha, s = s)
     for _, label in enumerate(name):
-        axs[1].text(a_g[ind[_]], b_g[ind[_]], label)
+        axs[1].text(a_g[ind[_]], b_g[ind[_]], label, fontsize = 12)
     axs[1].set_xlabel(r"$\bar{\lambda}_W^\top \gamma$")
     axs[1].set_ylabel(r"$\bar{\lambda}_Z^\top \gamma$")
 
