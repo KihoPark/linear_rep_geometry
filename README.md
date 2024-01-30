@@ -18,4 +18,4 @@ Make a directory `matrices` and run [`store_matrices.py`](store_matrices.py) fir
 - [**`2_heatmap.ipynb`**](2_heatmap.ipynb): We compare the orthogonality between the unembedding representations for causally separable concepts based on the causal inner product (vs Euclidean and random inner product)
 - [**`3_measurement.ipynb`**](3_measurement.ipynb): We confirm that the concept direction acts as a linear probe
 - [**`4_intervention.ipynb`**](4_intervention.ipynb): We confirm that the embedding representation changes the target concept, without changing off-target concepts.
-- [**`5_check_independence.ipynb`**](5_check_independence.ipynb): We validate Assumption 3.3.
+- [**`5_sanity_check.ipynb`**](5_sanity_check.ipynb): We verify that the causal inner product we find satisfies the uncorrelatedness property from Assumption 3.3.

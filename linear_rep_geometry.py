@@ -302,39 +302,36 @@ def show_rank(text_batch, l_batch, g, concept_g, which_ind, concept_number):
 
 
 
-####### Appendix: check the assumption #######
-## check independence
-def check_indep(gamma, g, concept_gamma, concept_g, i, j, concept_names,
-                alpha = 0.3, s = 0.8, name = [], ind = [], fig_name = "englsih"):
-    a_gamma = gamma @ concept_gamma[i]
-    b_gamma = gamma @ concept_gamma[j]
-    a_g = g @ concept_g[i]
-    b_g = g @ concept_g[j]
+####### Appendix: Sanity check for the estimated causal inner product #######
+def sanity_check(g, concept_g, a_i, b_i, c_i, d_i, concept_names,
+                 alpha = 0.3, s = 0.8, name_1 = [], ind_1 = [], name_2 = [], ind_2 = []):
+    a_g = g @ concept_g[a_i]
+    b_g = g @ concept_g[b_i]
+    c_g = g @ concept_g[c_i]
+    d_g = g @ concept_g[d_i]
 
     fig, axs = plt.subplots(1, 2, figsize=(12,6))
     
-    axs[0].scatter(a_gamma.cpu().numpy(), b_gamma.cpu().numpy(), alpha = alpha, s = s)
-    for _, label in enumerate(name):
-        axs[0].text(a_gamma[ind[_]], b_gamma[ind[_]], label, fontsize = 12)
-    axs[0].set_xlabel(r"$\bar{\gamma}_W^\top \gamma$")
-    axs[0].set_ylabel(r"$\bar{\gamma}_Z^\top \gamma$")
+    axs[0].scatter(a_g.cpu().numpy(), b_g.cpu().numpy(), alpha = alpha, s = s)
+    for _, label in enumerate(name_1):
+        axs[0].text(a_g[ind_1[_]], b_g[ind_1[_]], label, fontsize = 12)
+    axs[0].set_xlabel(r"$\bar{\lambda}_W^\top \gamma$")
+    axs[0].set_ylabel(r"$\bar{\lambda}_Z^\top \gamma$")
+    axs[0].set_title(f"W: {concept_names[a_i]}, Z: {concept_names[b_i]}", x = 0.48, y=1.02)
     
-    axs[1].scatter(a_g.cpu().numpy(), b_g.cpu().numpy(), alpha = alpha, s = s)
-    for _, label in enumerate(name):
-        axs[1].text(a_g[ind[_]], b_g[ind[_]], label, fontsize = 12)
+    axs[1].scatter(c_g.cpu().numpy(), d_g.cpu().numpy(), alpha = alpha, s = s)
+    for _, label in enumerate(name_2):
+        axs[1].text(c_g[ind_2[_]], d_g[ind_2[_]], label, fontsize = 12)
     axs[1].set_xlabel(r"$\bar{\lambda}_W^\top \gamma$")
     axs[1].set_ylabel(r"$\bar{\lambda}_Z^\top \gamma$")
+    axs[1].set_title(f"W: {concept_names[c_i]}, Z: {concept_names[d_i]}", x = 0.48, y=1.02)
 
     axs[0].axhline(0, color='gray', linestyle='--', alpha = 0.6)
     axs[0].axvline(0, color='gray', linestyle='--', alpha = 0.6)
     axs[1].axhline(0, color='gray', linestyle='--', alpha = 0.6)
     axs[1].axvline(0, color='gray', linestyle='--', alpha = 0.6)
 
-    big_ax = fig.add_subplot(111, frameon=False)
-    big_ax.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    big_ax.set_title(f"W: {concept_names[i]}, Z: {concept_names[j]}", x = 0.48, y=1.02)
-
     plt.tight_layout()
-    plt.savefig("figures/independent_" + fig_name + ".png", bbox_inches='tight')
+    plt.savefig("figures/sanity_check.png", dpi=300, bbox_inches='tight')
     plt.show()
 
