@@ -1,5 +1,5 @@
 # linear_rep_geometry
-In our paper, we formalize the linear representation hypothesis of large language models, and define a *causal inner product* that respects the semantic structure of language.
+In [our paper](https://arxiv.org/abs/2311.03658), we formalize the linear representation hypothesis of large language models, and define a *causal inner product* that respects the semantic structure of language.
 
 We confirm our theory with LLaMA-2 representations and this repo provides the code for the experiments.
 
